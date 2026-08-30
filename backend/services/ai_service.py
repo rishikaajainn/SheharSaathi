@@ -191,7 +191,8 @@ def scam_check(
             red_flags.append(
                 "Deposit appears unusually high."
             )
-
+    risk_score= min(risk_score,100)
+    #Determining risk level
     if risk_score >= 70:
         level = "High"
     elif risk_score >= 40:
@@ -199,29 +200,41 @@ def scam_check(
     else:
         level = "Low"
 
-    risk_score = min(risk_score, 100)
+    
     prompt = scam_check_prompt(request=request,risk_level=level,risk_score=risk_score, red_flags=red_flags,)
+    ai_data={
+        "summary":(
+            f"The listing has been accessed as {level.lower()} risk"
+            f"based on the available rental information."
+        ),
+        "positive_signals": [],
+        "recommendations": [
+            "Visit the property before making any payment.",
+            "Verify owner's identity and ownership documents.",
+            "Avoid making advance payments before verification.",
+        ],
+    }
     try:
         ai_response = generate_response(prompt)
-        ai_data = json.loads(ai_response)
-    except Exception:
-        ai_data={
-            "summary": "AI generated rental scam assessment.",
-            "positive_signals":[
-                "Basic listing information provided."
-            ],
-            "recommendations":[
-                "Visit the property before paying.",
-                "Verify owner identity."
-                "Avoid advance payment.",
-            ], 
-        } 
+        cleaned_response = ai_response.strip()
+        if cleaned_response.startswith(""):
+            cleaned_response = cleaned_response.replace(
+                "```json", ""
+            ).replace(
+                "```",""
+            ).strip()
+        parsed_data = json.loads(cleaned_response)
+        if isinstance(parsed_data, dict):
+            ai_data.update(parsed_data)
+    
+    except Exception as e:
+        print(f"Scam checker AI parsing error: {e}")
     return{
         "risk_level": level,
         "risk_score": risk_score,
         "summary": ai_data.get(
             "summary",
-            "AI generated rental scam assessment.",
+            "Rental scam assessment completed.",
         ),
         "red_flags": red_flags,
         "positive_signals": ai_data.get(
