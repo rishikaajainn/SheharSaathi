@@ -32,20 +32,16 @@ export interface LocalityRecommendation {
   id: string | number;
   locality: string;
   city: string;
-
   match_score?: number;
   average_rent: number;
   safety_score: number;
   transport_score?: number;
   affordability_score?: number;
-
   commute_minutes?: number;
   commute_summary?: string;
-
   nearest_metro?: string;
   nearby_metro?: string;
   distance_to_metro_km?: number;
-
   reasons?: string[];
   nearby_essentials?: string[];
   pros?: string[];
@@ -64,18 +60,13 @@ export interface ScamCheckRequest {
 }
 
 export interface ScamCheckResponse {
-  risk: ScamRiskLevel;
-  score: number;
-  reasons: string[];
-  safety_tips: string[];
+  risk_level: ScamRiskLevel;
+  risk_score: number;
   summary: string;
-
-  risk_level?: ScamRiskLevel;
-  risk_score?: number;
-  red_flags?: string[];
-  positive_signals?: string[];
-  recommendations?: string[];
-  disclaimer?: string;
+  red_flags: string[];
+  positive_signals: string[];
+  recommendations: string[];
+  disclaimer: string;
 }
 
 export interface BudgetAdviceRequest {
@@ -102,7 +93,6 @@ export interface BudgetAdviceResponse {
   savings_rate?: number;
   spending_alerts?: string[];
   savings_suggestions?: string[];
-
   status?: "Safe" | "Manageable" | "Tight" | "Risky";
   summary?: string;
   monthly_income?: number;

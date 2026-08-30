@@ -82,16 +82,22 @@ export default function ScamCheckPage() {
     }
   }
 
-  const reasons = Array.isArray(
-    result?.reasons
+  const redFlags = Array.isArray(
+    result?.red_flags
   )
-    ? result.reasons
+    ? result.red_flags
     : [];
 
-  const safetyTips = Array.isArray(
-    result?.safety_tips
+  const positiveSignals = Array.isArray(
+    result?.positive_signals
   )
-    ? result.safety_tips
+    ? result.positive_signals
+    : [];
+
+  const recommendations = Array.isArray(
+    result?.recommendations
+  )
+    ? result.recommendations
     : [];
 
   return (
@@ -221,8 +227,8 @@ export default function ScamCheckPage() {
                 >
                   <div className="space-y-8">
                     <RiskMeter
-                      risk={result.risk}
-                      score={result.score}
+                      risk={result.risk_level}
+                      score={result.risk_score}
                     />
 
                     <ResultSection
@@ -232,17 +238,17 @@ export default function ScamCheckPage() {
                         <AlertTriangle className="h-5 w-5" />
                       }
                     >
-                      {reasons.length > 0 ? (
+                      {redFlags.length > 0 ? (
                         <ul className="space-y-3">
-                          {reasons.map(
-                            (reason, index) => (
+                          {redFlags.map(
+                            (flag, index) => (
                               <li
-                                key={`${reason}-${index}`}
+                                key={`${flag}-${index}`}
                                 className="flex items-start gap-3 rounded-[18px] border border-amber-400/20 bg-amber-400/10 p-4 text-sm leading-7 text-amber-100"
                               >
                                 <span className="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-amber-300" />
 
-                                <span>{reason}</span>
+                                <span>{flag}</span>
                               </li>
                             )
                           )}
@@ -255,6 +261,31 @@ export default function ScamCheckPage() {
                       )}
                     </ResultSection>
 
+                    {positiveSignals.length > 0 && (
+                      <ResultSection
+                        title="Positive Signals"
+                        description="Signals that reduce the apparent scam risk."
+                        icon={
+                          <CheckCircle2 className="h-5 w-5" />
+                        }
+                      >
+                        <ul className="space-y-3">
+                          {positiveSignals.map(
+                            (signal, index) => (
+                              <li
+                                key={`${signal}-${index}`}
+                                className="flex items-start gap-3 rounded-[18px] border border-emerald-400/20 bg-emerald-400/10 p-4 text-sm leading-7 text-emerald-100"
+                              >
+                                <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-300" />
+
+                                <span>{signal}</span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </ResultSection>
+                    )}
+
                     <ResultSection
                       title="Safety Tips"
                       description="Recommended steps before continuing with the rental."
@@ -262,9 +293,9 @@ export default function ScamCheckPage() {
                         <CheckCircle2 className="h-5 w-5" />
                       }
                     >
-                      {safetyTips.length > 0 ? (
+                      {recommendations.length > 0 ? (
                         <ul className="space-y-3">
-                          {safetyTips.map(
+                          {recommendations.map(
                             (tip, index) => (
                               <li
                                 key={`${tip}-${index}`}
@@ -303,6 +334,12 @@ export default function ScamCheckPage() {
                           {result.summary ||
                             "No summary was returned."}
                         </p>
+
+                        {result.disclaimer && (
+                          <p className="mt-4 border-t border-[#D4A34F]/15 pt-4 text-xs leading-6 text-[#9EAEA7]">
+                            {result.disclaimer}
+                          </p>
+                        )}
                       </div>
                     </section>
                   </div>
