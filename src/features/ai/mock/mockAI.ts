@@ -11,7 +11,9 @@ import type {
 } from "@/features/ai/types";
 
 const delay = (milliseconds: number) =>
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
+  new Promise((resolve) =>
+    setTimeout(resolve, milliseconds)
+  );
 
 const chatHistory: ChatHistoryResponse["items"] = [
   {
@@ -28,7 +30,8 @@ export async function mockSendChatMessage(
 ): Promise<AIChatResponse> {
   await delay(900);
 
-  const normalizedQuestion = question.toLowerCase();
+  const normalizedQuestion =
+    question.toLowerCase();
 
   let answer =
     "I can help you with housing, locality selection, budgeting, transport, safety, and relocation planning. Share your city, monthly budget, occupation, and preferred commute so I can give you more personalized guidance.";
@@ -95,7 +98,10 @@ export async function mockClearChatHistory(): Promise<{
 }> {
   await delay(350);
 
-  chatHistory.splice(0, chatHistory.length);
+  chatHistory.splice(
+    0,
+    chatHistory.length
+  );
 
   chatHistory.push({
     id: "assistant-welcome",
@@ -107,7 +113,8 @@ export async function mockClearChatHistory(): Promise<{
 
   return {
     success: true,
-    message: "Chat history cleared successfully.",
+    message:
+      "Chat history cleared successfully.",
   };
 }
 
@@ -116,7 +123,8 @@ export async function mockGetLocalityRecommendations(
 ): Promise<LocalityRecommendationResponse> {
   await delay(1200);
 
-  const city = payload.city.trim() || "Delhi";
+  const city =
+    payload.city.trim() || "Delhi";
 
   return {
     recommendations: [
@@ -124,9 +132,13 @@ export async function mockGetLocalityRecommendations(
         id: "locality-1",
         locality: "Laxmi Nagar",
         city,
-        average_rent: Math.min(payload.budget, 12000),
+        average_rent: Math.min(
+          payload.budget,
+          12000
+        ),
         safety_score: 78,
-        nearby_metro: "Laxmi Nagar Metro Station",
+        nearby_metro:
+          "Laxmi Nagar Metro Station",
         commute_summary:
           "Strong metro access with convenient connectivity to central and east Delhi.",
         nearby_essentials: [
@@ -149,9 +161,13 @@ export async function mockGetLocalityRecommendations(
         id: "locality-2",
         locality: "Rohini",
         city,
-        average_rent: Math.min(payload.budget, 14500),
+        average_rent: Math.min(
+          payload.budget,
+          14500
+        ),
         safety_score: 84,
-        nearby_metro: "Rohini West Metro Station",
+        nearby_metro:
+          "Rohini West Metro Station",
         commute_summary:
           "Well-connected residential area with planned sectors and multiple metro stations.",
         nearby_essentials: [
@@ -174,9 +190,13 @@ export async function mockGetLocalityRecommendations(
         id: "locality-3",
         locality: "Dwarka",
         city,
-        average_rent: Math.min(payload.budget, 16000),
+        average_rent: Math.min(
+          payload.budget,
+          16000
+        ),
         safety_score: 87,
-        nearby_metro: "Dwarka Sector 12 Metro Station",
+        nearby_metro:
+          "Dwarka Sector 12 Metro Station",
         commute_summary:
           "Reliable metro corridor with access to the airport and western Delhi.",
         nearby_essentials: [
@@ -204,7 +224,8 @@ export async function mockCheckScam(
 ): Promise<ScamCheckResponse> {
   await delay(1100);
 
-  const normalizedContent = payload.content.toLowerCase();
+  const normalizedContent =
+    payload.content.toLowerCase();
 
   const suspiciousSignals = [
     "advance",
@@ -218,14 +239,22 @@ export async function mockCheckScam(
     "limited time",
   ];
 
-  const detectedSignals = suspiciousSignals.filter((signal) =>
-    normalizedContent.includes(signal)
+  const detectedSignals =
+    suspiciousSignals.filter((signal) =>
+      normalizedContent.includes(signal)
+    );
+
+  const score = Math.min(
+    35 + detectedSignals.length * 12,
+    96
   );
 
-  const score = Math.min(35 + detectedSignals.length * 12, 96);
-
   const risk =
-    score >= 70 ? ("High" as const) : score >= 40 ? ("Medium" as const) : ("Low" as const);
+    score >= 70
+      ? ("High" as const)
+      : score >= 40
+        ? ("Medium" as const)
+        : ("Low" as const);
 
   const reasons =
     detectedSignals.length > 0
@@ -239,21 +268,19 @@ export async function mockCheckScam(
         ];
 
   return {
-    risk,
-    score,
-    reasons,
-    safety_tips: [
-      "Visit the property or request a live video walkthrough.",
-      "Verify the owner’s identity and ownership documents.",
-      "Do not transfer money before confirming the listing.",
-      "Use written agreements and traceable payment methods.",
-    ],
+    risk_level: risk,
+    risk_score: score,
     summary:
-      risk === "High"
-        ? "This listing contains multiple warning signs and should not be trusted without strong verification."
-        : risk === "Medium"
-          ? "This listing contains some warning signs. Proceed carefully and verify every claim."
-          : "The listing appears relatively low risk, but standard verification is still necessary.",
+      "Mock rental scam assessment generated for testing.",
+    red_flags: reasons,
+    positive_signals: [],
+    recommendations: [
+      "Visit the property before making any payment.",
+      "Verify the owner's identity and ownership documents.",
+      "Avoid advance payments before verification.",
+    ],
+    disclaimer:
+      "This is an AI-based risk assessment and not a legal guarantee.",
   };
 }
 
@@ -269,21 +296,31 @@ export async function mockGetBudgetAdvice(
     payload.utilities +
     payload.other_expenses;
 
-  const remainingAmount = payload.monthly_income - totalExpenses;
+  const remainingAmount =
+    payload.monthly_income -
+    totalExpenses;
+
   const savingsRate =
     payload.monthly_income > 0
       ? Number(
-          ((payload.savings / payload.monthly_income) * 100).toFixed(1)
+          (
+            (payload.savings /
+              payload.monthly_income) *
+            100
+          ).toFixed(1)
         )
       : 0;
 
   const rentPercentage =
     payload.monthly_income > 0
-      ? (payload.rent / payload.monthly_income) * 100
+      ? (payload.rent /
+          payload.monthly_income) *
+        100
       : 0;
 
   const spendingAlerts: string[] = [];
-  const savingsSuggestions: string[] = [];
+  const savingsSuggestions: string[] =
+    [];
 
   if (rentPercentage > 40) {
     spendingAlerts.push(
@@ -291,7 +328,10 @@ export async function mockGetBudgetAdvice(
     );
   }
 
-  if (totalExpenses > payload.monthly_budget) {
+  if (
+    totalExpenses >
+    payload.monthly_budget
+  ) {
     spendingAlerts.push(
       "Your estimated expenses exceed the monthly budget you entered."
     );
@@ -303,7 +343,10 @@ export async function mockGetBudgetAdvice(
     );
   }
 
-  if (payload.savings < payload.monthly_income * 0.1) {
+  if (
+    payload.savings <
+    payload.monthly_income * 0.1
+  ) {
     savingsSuggestions.push(
       "Try to reserve at least 10% of your monthly income for savings."
     );
@@ -332,7 +375,8 @@ export async function mockGetBudgetAdvice(
     remaining_amount: remainingAmount,
     savings_rate: savingsRate,
     spending_alerts: spendingAlerts,
-    savings_suggestions: savingsSuggestions,
+    savings_suggestions:
+      savingsSuggestions,
   };
 }
 
@@ -344,38 +388,49 @@ export async function mockGetPersonalizedSuggestions(): Promise<PersonalizedSugg
       {
         id: "suggestion-1",
         type: "budget",
-        title: "Review your rent-to-budget ratio",
+        title:
+          "Review your rent-to-budget ratio",
         description:
           "Try to keep rent within 30–40% of your monthly income to leave room for food, travel, utilities, and savings.",
-        action_label: "Open Budget Advisor",
-        action_url: "/budget-advisor",
+        action_label:
+          "Open Budget Advisor",
+        action_url:
+          "/budget-advisor",
       },
       {
         id: "suggestion-2",
         type: "housing",
-        title: "Compare verified housing listings",
+        title:
+          "Compare verified housing listings",
         description:
           "Prioritise verified properties with clear rent, deposit, ownership, and availability details.",
-        action_label: "Browse Housing",
+        action_label:
+          "Browse Housing",
         action_url: "/housing",
       },
       {
         id: "suggestion-3",
         type: "safety",
-        title: "Check suspicious listings before paying",
+        title:
+          "Check suspicious listings before paying",
         description:
           "Use the scam checker whenever a listing demands urgent payment or avoids an in-person property visit.",
-        action_label: "Check a Listing",
-        action_url: "/scam-check",
+        action_label:
+          "Check a Listing",
+        action_url:
+          "/scam-check",
       },
       {
         id: "suggestion-4",
         type: "transport",
-        title: "Include commute cost in locality decisions",
+        title:
+          "Include commute cost in locality decisions",
         description:
           "A cheaper room may become expensive if daily travel takes too long or requires multiple transport changes.",
-        action_label: "Find Localities",
-        action_url: "/locality",
+        action_label:
+          "Find Localities",
+        action_url:
+          "/locality",
       },
     ],
   };
